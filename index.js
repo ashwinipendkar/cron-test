@@ -1,5 +1,5 @@
 const express = require("express");
-const cron = require("node-cron");
+const startCronJob = require("./cron/cron-schedular");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,19 +14,8 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date() });
 });
 
-// ✅ Cron job: runs every minute
-let counter = 0;
-const job = cron.schedule("* * * * *", () => {
-  counter++;
-  console.log(
-    `[${new Date().toLocaleString()}] Cron job executed ${counter} time(s)`
-  );
-
-  if (counter === 5) {
-    console.log("Stopping cron job after 5 runs");
-    job.stop();
-  }
-});
+// Start cron job
+startCronJob();
 
 console.log("Cron job scheduler started. Waiting for the first execution...");
 
